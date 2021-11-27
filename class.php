@@ -13,9 +13,14 @@ class dbcon{
 
     function doQuery($sql){
 
-        $result =   mysqli_query($this->con,$sql);
+        $result =   mysqli_query($this->config,$sql);
         return $result; 
     }
+  ///==========
+    // function select($table){
+    //    $sql = "select * from `$table`";
+    //    $q = mysqli_query($this->config,$sql);
+    // }
 
 }
 
@@ -24,26 +29,16 @@ class dbcon{
 
 
 class validation{
-   public $title     = $_POST['title'];
-  public  $content   = $_POST['content'];
+   public $title  ;
+  public  $content  ;
+  public $image;
+  
 
-  
-  
-    # Image File Data  .... 
-  public  $file_tmp  =  $_FILES['image']['tmp_name'];
-  public  $file_name =  $_FILES['image']['name'];  
-  public  $file_size =  $_FILES['image']['size'];
- public   $file_type =  $_FILES['image']['type'];   
-  
-  public  $file_ex   = explode('.',$file_name);
-  public  $updated_ex = strtolower(end($file_ex));
-
-    public  function __construct($val1,$val2,$val3,$val4){
+    public  function __construct($val1,$val2,$val3){
 
       $this->title     = $val1;
       $this->content    = $val2;
-      $this->file_name = $val3;
-      $this->updated_ex = $val4;
+     $this -> image =$val3;
     }
 
 
@@ -57,8 +52,13 @@ $validate = new validator;
 # Clean Inputs .... 
 $title     = $validate->Clean($this->title);
 $content    = $validate->Clean( $this->content );
-$file_name = $validate;
-$updated_ex =$validate;
+$file_tmp  =  $_FILES['image']['tmp_name'];
+$file_name =  $_FILES['image']['name'];  
+$file_size =  $_FILES['image']['size'];
+$file_type =  $_FILES['image']['type'];   
+
+  $file_ex   = explode('.',$file_name);
+ $updated_ex = strtolower(end($file_ex));
 
 
 # Array Errors ... 
@@ -117,7 +117,6 @@ if(!$validate->validate($content,1)){
     }
   
       
-  
   
 
 }

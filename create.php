@@ -5,7 +5,8 @@
 - image = req & file
 **/
 require 'class.php';
-
+// $obj1 =new validation();
+// $obj1 ->addRow();
   
 
 ?>
