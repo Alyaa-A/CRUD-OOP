@@ -5,9 +5,83 @@
 - image = req & file
 **/
 require 'class.php';
+require 'valid.php';
 // $obj1 =new validation();
 // $obj1 ->addRow();
   
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" ) {
+  
+  #create object
+  $validate = new validator;
+  
+  #clean inputs
+  $title   = $validate->Clean($_POST['title']);
+  $content = $validate->Clean($_POST['content']);
+
+  # Image File Data  .... 
+  $file_tmp  =  $_FILES['image']['tmp_name'];
+  $file_name =  $_FILES['image']['name'];  
+  $file_size =  $_FILES['image']['size'];
+  $file_type =  $_FILES['image']['type']; 
+
+  $file_ex   = explode('.',$file_name);
+  $updated_ex = strtolower(end($file_ex));
+  
+  #validate inputs
+
+  $errors = [];
+
+
+  if (!$validate->validate($title , 1)) {
+    $errors['title'] = "Field Required";
+  }elseif(!$validate->validate($title,3)){
+    $errors['title'] = "Invalid ";
+  }  
+  
+
+
+  if (!$validate->validate($content , 1)) {
+    $errors['content'] = "Field Required";
+  }elseif(!$validate->validate($content,2)){
+    $errors['content'] = "must be at least more than 50 char";
+  }  
+
+  if(!$validate->validate($file_name,1)){
+    $errors['Image'] = "Field Required";
+  }elseif(!$validate->validate($updated_ex,4)){
+    $errors['Image'] = "Invalid image type";
+  }
+  
+  if(count($errors) > 0){
+    foreach ($errors as $key => $error) {
+      echo "* " . $key . " : " . $error . "<br>";
+    } 
+  }else{
+
+    # Upload Image ..... 
+    $finalName = rand().time().'.'.$updated_ex;
+
+    $disPath = './uploads/'.$finalName;
+
+    #db
+    $db     = new dbcon;
+    $sql    = "INSERT into blog ( title , content , image) VALUES ('$title' , '$content' , '$finalName')"; 
+    $result = $db->doQuery($sql);
+
+    if($result){
+      echo 'Raw Inserted';
+    }else{
+      echo'Error Try Again';
+    }
+
+  }
+
+}
+
+
+
+
 
 ?>
 
